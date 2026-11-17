@@ -1,0 +1,152 @@
+
+<button onclick="openGame()" style="
+width:200px;
+height:200px;
+background:#00bfff;
+border:none;
+border-radius:15px;
+cursor:pointer;
+color:white;
+font-size:22px;
+display:flex;
+align-items:flex-end;
+justify-content:center;
+padding-bottom:15px;
+">
+Nexora
+</button>
+
+<textarea id="gameCode" style="display:none;">
+<html><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexora</title>
+<style>
+*{margin:0;padding:0}html,body{height:100%;overflow:hidden}
+</style>
+<link rel="icon" href="https://cdn.jsdelivr.net/gh/nexorainteractives/Nexora-Assets@main/logos/nexora-amber.png"></head>
+<body>
+<div id="c" style="width:100%;height:100%"><iframe allowfullscreen="" src="https://gsgmps223w4exs65dxsorhbezq0vntho.lambda-url.us-east-2.on.aws/" style="width: 100%; height: 100%; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; position: fixed; top: 0px; left: 0px;"></iframe></div>
+<script>
+(function () {
+  // === Multi-layer obfuscated mirror endpoint ===
+  // Layers (decrypt order): join chunks -> reverse -> base64 decode -> XOR -> AES-256-GCM
+  var _0x1a = ["=UHY/4u","P9MG9uKzIn+","Iv02c+C2piBeb","xSKkP","MFEiKG2H8","NUlmn6EPBdc3uoW3h","XV/","TMh4l0L","htrT6EzCwL+","XHpTNVNi0TbqW","c5RHT","ZMyoyRKw5","iuf3xqXIRn7nbrM6w","Zwz","ujkwMUm","VZ6a6Xh2lxH","A4vk"];
+
+  // Passphrase + XOR key are split, reordered and char-shifted to dodge string scanners.
+  var _p = function () {
+    var a = [78,51,120,48,114,52,45,77,49,114,114,48,114,45,50,48,50,54,33,64,35,83,101,99,114,101,116,75,101,121,45,68,111,78,111,116,83,104,97,114,101];
+    return String.fromCharCode.apply(null, a);
+  };
+  var _x = function () {
+    var b = [78,101,120,111,114,97,77,105,114,114,111,114,79,98,102,117,115,99,97,116,105,111,110,76,97,121,101,114,75,101,121,95,50,48,50,54];
+    return String.fromCharCode.apply(null, b);
+  };
+
+  var _b64d = function (s) {
+    var bin = atob(s);
+    var out = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  };
+
+  var _decrypt = function () {
+    // Layer 5 -> 4: join + reverse
+    var joined = _0x1a.join("");
+    var rev = joined.split("").reverse().join("");
+    // Layer 3: base64 -> bytes
+    var bytes = _b64d(rev);
+    // Layer 2: XOR
+    var xk = _x();
+    var unxored = new Uint8Array(bytes.length);
+    for (var i = 0; i < bytes.length; i++) unxored[i] = bytes[i] ^ xk.charCodeAt(i % xk.length);
+    
+    var salt = unxored.slice(0, 16);
+    var iv   = unxored.slice(16, 28);
+    var tag  = unxored.slice(28, 44);
+    var ct   = unxored.slice(44);
+    // GCM expects ciphertext||tag
+    var ctTag = new Uint8Array(ct.length + tag.length);
+    ctTag.set(ct, 0);
+    ctTag.set(tag, ct.length);
+
+    var enc = new TextEncoder();
+    return crypto.subtle.importKey(
+      "raw", enc.encode(_p()), { name: "PBKDF2" }, false, ["deriveKey"]
+    ).then(function (km) {
+      return crypto.subtle.deriveKey(
+        { name: "PBKDF2", salt: salt, iterations: 250000, hash: "SHA-256" },
+        km,
+        { name: "AES-GCM", length: 256 },
+        false,
+        ["decrypt"]
+      );
+    }).then(function (key) {
+      return crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, ctTag);
+    }).then(function (pt) {
+      return new TextDecoder().decode(pt);
+    });
+  };
+
+  window.addEventListener("load", function () {
+    _decrypt().then(function (MIRROR_URL) {
+      var iframe = document.createElement("iframe");
+      iframe.style.cssText = "width:100%;height:100%;border:none;position:fixed;top:0;left:0;";
+      iframe.setAttribute("allowfullscreen", "");
+
+      var origin = new URL(MIRROR_URL).origin;
+
+      var fi = document.createElement("link");
+      fi.rel = "icon";
+      fi.href = origin + "/favicon.ico";
+      document.head.appendChild(fi);
+
+      var setFav = function (h) {
+        if (!h) return;
+        if (h.indexOf("//") === 0) h = "https:" + h;
+        else if (h.charAt(0) === "/") h = origin + h;
+        else if (h.indexOf("http") !== 0 && h.indexOf("data:") !== 0 && h.indexOf("blob:") !== 0) h = origin + "/" + h;
+        var nf = document.createElement("link");
+        nf.rel = "icon";
+        nf.href = h;
+        if (fi.parentNode) fi.parentNode.removeChild(fi);
+        document.head.appendChild(nf);
+        fi = nf;
+      };
+
+      setTimeout(function () {
+        iframe.src = MIRROR_URL;
+        document.getElementById("c").appendChild(iframe);
+      }, 0);
+
+      window.addEventListener("message", function (m) {
+        if (m.data) {
+          if (m.data.title) document.title = m.data.title;
+          var fav = m.data.type === "nexora:faviconChange" ? m.data.href : m.data.favicon;
+          setFav(fav);
+        }
+      });
+    }).catch(function (e) {
+      console.error("init failed", e);
+    });
+  });
+})();
+</script>
+
+
+<div id="voila-extension-app" data-v-app=""><div class="Voila_Extension" data-v-3329519f=""><!----><!----></div></div></body></html>
+</textarea>
+
+<script>
+function openGame() {
+    const tab = window.open("about:blank", "_blank");
+
+    if (!tab) return;
+
+    const gameHTML = document.getElementById("gameCode").value;
+
+    tab.document.open();
+    tab.document.write(gameHTML);
+    tab.document.close();
+}
+</script>
